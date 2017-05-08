@@ -1,0 +1,72 @@
+# 元祖興行パッケージウェブフックアプリケーション
+
+# Features
+
+# Getting Started
+
+## インフラ
+基本的にnode.jsのウェブアプリケーションです。
+ウェブサーバーとしては、AzureのWebAppsあるいはGCPのAppEngineを想定しており、両方で動くように開発していくことが望ましい。
+
+## 言語
+実態としては、linuxあるいはwindows上でnode.jsは動くわけですが、プログラミング言語としては、alternative javascriptのひとつであるTypeScriptを採用しています。
+
+* TypeScript(https://www.typescriptlang.org/)
+
+## 開発方法
+npmでパッケージをインストールします。npmはnode.jsでスタンダードなパッケージ管理ツールです。パッケージ管理にとどまらず、開発やサーバー起動においても活躍します。
+
+```shell
+npm install
+```
+* npm(https://www.npmjs.com/)
+
+typescriptをjavascriptにコンパイルします。wオプションでファイル変更監視できます。
+
+```shell
+npm run build -- -w
+```
+
+npmでローカルサーバーを立ち上げることができます。
+
+```shell
+npm start
+```
+(http://localhost:8080)にアクセスすると、ローカルでウェブアプリを確認できます。
+
+ビルドファイルクリーン
+
+```shell
+npm run clean
+```
+
+
+## Required environment variables
+```shell
+set NODE_ENV=**********環境名(development,test,productionなど)**********
+set MONGOLAB_URI=**********mongodb接続URI**********
+```
+only on Aure WebApps
+
+```shell
+set WEBSITE_NODE_DEFAULT_VERSION=**********node.jsバージョン**********
+set WEBSITE_TIME_ZONE=Tokyo Standard Time
+```
+DEBUG
+
+```shell
+set DEBUG=chevre-webhook*
+```
+
+
+# tslint
+
+コード品質チェックをtslintで行っています。lintパッケージとして以下を仕様。
+* [tslint](https://github.com/palantir/tslint)
+* [tslint-microsoft-contrib](https://github.com/Microsoft/tslint-microsoft-contrib)
+`npm run check`でチェック実行。改修の際には、必ずチェックすること。
+
+# test
+mochaフレームワークでテスト実行。
+* [mocha](https://www.npmjs.com/package/mocha)
+`npm test`でテスト実行。

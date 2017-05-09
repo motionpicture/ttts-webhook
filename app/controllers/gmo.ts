@@ -4,14 +4,14 @@
  * @namespace controller/gmo
  */
 
-import { GMONotificationUtil, Models } from '@motionpicture/chevre-domain';
+import { GMONotificationUtil, Models } from '@motionpicture/ttts-domain';
 import * as createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
 
 import GMONotificationModel from '../models/gmo/notification';
 import GMONotificationResponseModel from '../models/gmo/notificationResponse';
 
-const debug = createDebug('chevre-webhook:controller:gmo');
+const debug = createDebug('ttts-webhook:controller:gmo');
 
 /**
  * GMO結果通知受信

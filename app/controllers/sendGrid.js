@@ -13,9 +13,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const chevre_domain_1 = require("@motionpicture/chevre-domain");
+const ttts_domain_1 = require("@motionpicture/ttts-domain");
 const createDebug = require("debug");
-const debug = createDebug('chevre-webhook:controller:sendGrid');
+const debug = createDebug('ttts-webhook:controller:sendGrid');
 /**
  * SendGridイベントフック
  */
@@ -28,7 +28,7 @@ function notifyEvent(req, res, next) {
         }
         try {
             debug('creating sendgrid_event_notifications...');
-            const notifications = yield chevre_domain_1.Models.SendGridEventNotification.create(req.body);
+            const notifications = yield ttts_domain_1.Models.SendGridEventNotification.create(req.body);
             debug('sendgrid_event_notifications created.', notifications);
             res.send('0');
         }

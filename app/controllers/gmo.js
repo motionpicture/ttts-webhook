@@ -13,11 +13,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const chevre_domain_1 = require("@motionpicture/chevre-domain");
+const ttts_domain_1 = require("@motionpicture/ttts-domain");
 const createDebug = require("debug");
 const notification_1 = require("../models/gmo/notification");
 const notificationResponse_1 = require("../models/gmo/notificationResponse");
-const debug = createDebug('chevre-webhook:controller:gmo');
+const debug = createDebug('ttts-webhook:controller:gmo');
 /**
  * GMO結果通知受信
  *
@@ -39,7 +39,7 @@ function notify(req, res, __) {
         }
         // 何を最低限保管する？
         try {
-            yield chevre_domain_1.Models.GMONotification.create({
+            yield ttts_domain_1.Models.GMONotification.create({
                 shop_id: gmoNotificationModel.ShopID,
                 order_id: gmoNotificationModel.OrderID,
                 status: gmoNotificationModel.Status,
@@ -57,7 +57,7 @@ function notify(req, res, __) {
                 cvs_conf_no: gmoNotificationModel.CvsConfNo,
                 cvs_receipt_no: gmoNotificationModel.CvsReceiptNo,
                 payment_term: gmoNotificationModel.PaymentTerm,
-                process_status: chevre_domain_1.GMONotificationUtil.PROCESS_STATUS_UNPROCESSED
+                process_status: ttts_domain_1.GMONotificationUtil.PROCESS_STATUS_UNPROCESSED
             });
             res.send(notificationResponse_1.default.RECV_RES_OK);
         }

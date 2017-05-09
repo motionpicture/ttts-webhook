@@ -4,11 +4,11 @@
  * @namespace controller/sendGrid
  */
 
-import { Models } from '@motionpicture/chevre-domain';
+import { Models } from '@motionpicture/ttts-domain';
 import * as createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
 
-const debug = createDebug('chevre-webhook:controller:sendGrid');
+const debug = createDebug('ttts-webhook:controller:sendGrid');
 
 /**
  * SendGridイベントフック

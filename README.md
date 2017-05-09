@@ -1,4 +1,4 @@
-# 元祖興行パッケージウェブフックアプリケーション
+# TTTSウェブフックアプリケーション
 
 # Features
 
@@ -55,7 +55,7 @@ set WEBSITE_TIME_ZONE=Tokyo Standard Time
 DEBUG
 
 ```shell
-set DEBUG=chevre-webhook*
+set DEBUG=ttts-webhook*
 ```
 
 

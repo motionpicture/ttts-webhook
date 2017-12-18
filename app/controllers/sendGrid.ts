@@ -1,34 +1,49 @@
 /**
  * SendGridウェブフックコントローラー
- *
  * @namespace controller/sendGrid
  */
 
 import { Models } from '@motionpicture/ttts-domain';
 import * as createDebug from 'debug';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
+import { BAD_REQUEST, INTERNAL_SERVER_ERROR, OK } from 'http-status';
 
 const debug = createDebug('ttts-webhook:controller:sendGrid');
 
 /**
  * SendGridイベントフック
  */
-export async function notifyEvent(req: Request, res: Response, next: NextFunction) {
-    debug('SendGrid event notification is', req.body);
+export async function notifyEvent(req: Request, res: Response) {
+    const events = req.body;
+    debug('sendgrid events:', req.body);
 
-    if (req.method === 'GET') {
-        res.send('0');
+    if (!Array.isArray(events)) {
+        res.status(BAD_REQUEST).end();
+
         return;
     }
 
     try {
-        debug('creating sendgrid_event_notifications...');
-        const notifications = await Models.SendGridEventNotification.create(req.body);
-        debug('sendgrid_event_notifications created.', notifications);
+        await Promise.all(events.map(async (event) => {
+            if (event.sg_event_id === undefined) {
+                throw new Error('sg_event_id undefined');
+            }
 
-        res.send('0');
+            debug('creating sendgrid_event_notifications...');
+            const notifications = await Models.SendGridEventNotification.findOneAndUpdate(
+                {
+                    sg_event_id: event.sg_event_id
+                },
+                event,
+                {
+                    upsert: true
+                }
+            ).exec();
+            debug('sendgrid_event_notifications created.', notifications);
+        }));
+
+        res.status(OK).end();
     } catch (error) {
-        console.error(error);
-        next(error);
+        res.status(INTERNAL_SERVER_ERROR).end();
     }
 }

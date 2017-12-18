@@ -1,7 +1,6 @@
 "use strict";
 /**
  * SendGridウェブフックコントローラー
- *
  * @namespace controller/sendGrid
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -15,26 +14,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const ttts_domain_1 = require("@motionpicture/ttts-domain");
 const createDebug = require("debug");
+const http_status_1 = require("http-status");
 const debug = createDebug('ttts-webhook:controller:sendGrid');
 /**
  * SendGridイベントフック
  */
-function notifyEvent(req, res, next) {
+function notifyEvent(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        debug('SendGrid event notification is', req.body);
-        if (req.method === 'GET') {
-            res.send('0');
+        const events = req.body;
+        debug('sendgrid events:', req.body);
+        if (!Array.isArray(events)) {
+            res.status(http_status_1.BAD_REQUEST).end();
             return;
         }
         try {
-            debug('creating sendgrid_event_notifications...');
-            const notifications = yield ttts_domain_1.Models.SendGridEventNotification.create(req.body);
-            debug('sendgrid_event_notifications created.', notifications);
-            res.send('0');
+            yield Promise.all(events.map((event) => __awaiter(this, void 0, void 0, function* () {
+                if (event.sg_event_id === undefined) {
+                    throw new Error('sg_event_id undefined');
+                }
+                debug('creating sendgrid_event_notifications...');
+                const notifications = yield ttts_domain_1.Models.SendGridEventNotification.findOneAndUpdate({
+                    sg_event_id: event.sg_event_id
+                }, event, {
+                    upsert: true
+                }).exec();
+                debug('sendgrid_event_notifications created.', notifications);
+            })));
+            res.status(http_status_1.OK).end();
         }
         catch (error) {
-            console.error(error);
-            next(error);
+            res.status(http_status_1.INTERNAL_SERVER_ERROR).end();
         }
     });
 }

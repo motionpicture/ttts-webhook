@@ -1,26 +1,21 @@
 /**
  * expressアプリケーション
- *
  * @module app
- * @global
  */
 
+import * as ttts from '@motionpicture/ttts-domain';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
-import * as mongoose from 'mongoose';
 
-import basicAuth from './middlewares/basicAuth';
-import benchmarks from './middlewares/benchmarks';
 import errorHandler from './middlewares/errorHandler';
 import notFoundHandler from './middlewares/notFoundHandler';
 
 import gmoRouter from './routes/gmo';
 import sendGridRouter from './routes/sendGrid';
 
-const app = express();
+import mongooseConnectionOptions from '../mongooseConnectionOptions';
 
-app.use(benchmarks); // ベンチマーク的な
-app.use(basicAuth); // ベーシック認証
+const app = express();
 
 if (process.env.NODE_ENV !== 'production') {
     // サーバーエラーテスト
@@ -40,11 +35,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 // uncomment after placing your favicon in /public
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // for parsing multipart/form-data
 
-app.use(express.static(__dirname + '/../public'));
+// app.use(express.static(__dirname + '/../public'));
 
 // ルーティング登録の順序に注意！
 app.use('/gmo', gmoRouter);
@@ -56,20 +51,6 @@ app.use(notFoundHandler);
 // error handlers
 app.use(errorHandler);
 
-/*
- * Mongoose by default sets the auto_reconnect option to true.
- * We recommend setting socket options at both the server and replica set level.
- * We recommend a 30 second connection timeout because it allows for
- * plenty of time in most operating environments.
- */
-// Use native promises
-(<any>mongoose).Promise = global.Promise;
-mongoose.connect(
-    process.env.MONGOLAB_URI,
-    {
-        server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } },
-        replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }
-    }
-);
+ttts.mongoose.connect(<string>process.env.MONGOLAB_URI, mongooseConnectionOptions);
 
 export = app;

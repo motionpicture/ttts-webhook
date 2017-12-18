@@ -1,7 +1,6 @@
 "use strict";
 /**
  * GMOウェブフックコントローラー
- *
  * @namespace controller/gmo
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -13,11 +12,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const ttts_domain_1 = require("@motionpicture/ttts-domain");
-const createDebug = require("debug");
-const notification_1 = require("../models/gmo/notification");
+const ttts = require("@motionpicture/ttts-domain");
 const notificationResponse_1 = require("../models/gmo/notificationResponse");
-const debug = createDebug('ttts-webhook:controller:gmo');
 /**
  * GMO結果通知受信
  *
@@ -31,34 +27,16 @@ const debug = createDebug('ttts-webhook:controller:gmo');
  */
 function notify(req, res, __) {
     return __awaiter(this, void 0, void 0, function* () {
-        const gmoNotificationModel = notification_1.default.parse(req.body);
-        debug('gmoNotificationModel is', gmoNotificationModel);
-        if (gmoNotificationModel.OrderID === undefined) {
+        if (req.body.OrderID === undefined) {
             res.send(notificationResponse_1.default.RECV_RES_OK);
             return;
         }
         // 何を最低限保管する？
         try {
-            yield ttts_domain_1.Models.GMONotification.create({
-                shop_id: gmoNotificationModel.ShopID,
-                order_id: gmoNotificationModel.OrderID,
-                status: gmoNotificationModel.Status,
-                job_cd: gmoNotificationModel.JobCd,
-                amount: gmoNotificationModel.Amount,
-                pay_type: gmoNotificationModel.PayType,
-                tax: gmoNotificationModel.Tax,
-                access_id: gmoNotificationModel.AccessID,
-                forward: gmoNotificationModel.Forward,
-                method: gmoNotificationModel.Method,
-                approve: gmoNotificationModel.Approve,
-                tran_id: gmoNotificationModel.TranID,
-                tran_date: gmoNotificationModel.TranDate,
-                cvs_code: gmoNotificationModel.CvsCode,
-                cvs_conf_no: gmoNotificationModel.CvsConfNo,
-                cvs_receipt_no: gmoNotificationModel.CvsReceiptNo,
-                payment_term: gmoNotificationModel.PaymentTerm,
-                process_status: ttts_domain_1.GMONotificationUtil.PROCESS_STATUS_UNPROCESSED
-            });
+            const notification = ttts.GMO.factory.resultNotification.creditCard.createFromRequestBody(req.body);
+            yield ttts.Models.GMONotification.create(Object.assign({}, notification, {
+                process_status: ttts.GMONotificationUtil.PROCESS_STATUS_UNPROCESSED
+            }));
             res.send(notificationResponse_1.default.RECV_RES_OK);
         }
         catch (error) {

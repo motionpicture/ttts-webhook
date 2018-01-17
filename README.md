@@ -1,72 +1,78 @@
-# TTTSウェブフックアプリケーション
+<img src="https://motionpicture.jp/images/common/logo_01.svg" alt="motionpicture" title="motionpicture" align="right" height="56" width="98"/>
 
-# Features
+# ttts webhook ウェブアプリケーション
 
-# Getting Started
+## Getting Started
 
-## インフラ
-基本的にnode.jsのウェブアプリケーションです。
-ウェブサーバーとしては、AzureのWebAppsあるいはGCPのAppEngineを想定しており、両方で動くように開発していくことが望ましい。
+### インフラ
+基本的にnode.jsのウェブアプリケーション。
+ウェブサーバーとしては、AzureのWebApps or GCPのAppEngine or AWSのelastic beanstalkを想定。
+全てで動くように開発していくことが望ましい。
 
-## 言語
-実態としては、linuxあるいはwindows上でnode.jsは動くわけですが、プログラミング言語としては、alternative javascriptのひとつであるTypeScriptを採用しています。
+### 言語
+実態としては、linuxあるいはwindows上でのnode.js。プログラミング言語としては、TypeScript。
 
-* TypeScript(https://www.typescriptlang.org/)
+* [TypeScript](https://www.typescriptlang.org/)
 
-## 開発方法
-npmでパッケージをインストールします。npmはnode.jsでスタンダードなパッケージ管理ツールです。パッケージ管理にとどまらず、開発やサーバー起動においても活躍します。
+### 開発方法
+npmでパッケージをインストール。
 
 ```shell
 npm install
 ```
-* npm(https://www.npmjs.com/)
+* [npm](https://www.npmjs.com/)
 
-typescriptをjavascriptにコンパイルします。wオプションでファイル変更監視できます。
+typescriptをjavascriptにコンパイル。
 
 ```shell
 npm run build -- -w
 ```
 
-npmでローカルサーバーを立ち上げることができます。
+npmでローカルサーバーを起動。
 
 ```shell
 npm start
 ```
-(http://localhost:8080)にアクセスすると、ローカルでウェブアプリを確認できます。
-
-ビルドファイルクリーン
-
-```shell
-npm run clean
-```
 
 
-## Required environment variables
-```shell
-set NODE_ENV=**********環境名(development,test,productionなど)**********
-set MONGOLAB_URI=**********mongodb接続URI**********
-```
-only on Aure WebApps
+### Environment variables
 
-```shell
-set WEBSITE_NODE_DEFAULT_VERSION=**********node.jsバージョン**********
-set WEBSITE_TIME_ZONE=Tokyo Standard Time
-```
-DEBUG
-
-```shell
-set DEBUG=ttts-webhook*
-```
+| Name              | Required | Purpose                        | Value          |
+| ----------------- | -------- | ------------------------------ | -------------- |
+| `DEBUG`           | false    | Debug                          | ttts-webhook:* |
+| `NPM_TOKEN`       | true     | NPM auth token                 |                |
+| `NODE_ENV`        | true     | environment name               |                |
+| `MONGOLAB_URI`    | true     | MongoDB connection URI         |                |
+| `BASIC_AUTH_NAME` | false    | Basic authentication user name |                |
+| `BASIC_AUTH_PASS` | false    | Basic authentication user pass |                |
 
 
-# tslint
+## tslint
 
-コード品質チェックをtslintで行っています。lintパッケージとして以下を仕様。
+コード品質チェックをtslintで行う。
 * [tslint](https://github.com/palantir/tslint)
 * [tslint-microsoft-contrib](https://github.com/Microsoft/tslint-microsoft-contrib)
-`npm run check`でチェック実行。改修の際には、必ずチェックすること。
 
-# test
-mochaフレームワークでテスト実行。
-* [mocha](https://www.npmjs.com/package/mocha)
+`npm run check`でチェック実行。
+
+
+## パッケージ脆弱性のチェック
+
+* [nsp](https://www.npmjs.com/package/nsp)
+
+
+## clean
+`npm run clean`で不要なソース削除。
+
+
+## テスト
 `npm test`でテスト実行。
+
+
+## ドキュメント
+`npm run doc`でjsdocが作成されます。
+
+
+## 参考
+* [GMO Payment Gateway 結果通知プログラム](https://faq.gmo-pg.com/service/detail.aspx?id=1050&a=102&isCrawler=1)
+* [SendGrid Event Webhook](https://sendgrid.com/docs/API_Reference/Webhooks/event.html)

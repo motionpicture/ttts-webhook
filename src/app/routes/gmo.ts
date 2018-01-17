@@ -1,6 +1,6 @@
 /**
  * GMOルーター
- * @namespace routers.gmo
+ * @namespace routes.gmo
  */
 
 import * as ttts from '@motionpicture/ttts-domain';

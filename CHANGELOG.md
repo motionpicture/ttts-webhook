@@ -16,3 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Security
 
+
+## v2.0.0 - 2018-01-17
+### Added
+- ttts-domain@12.0.0で再リリース。

@@ -3,25 +3,20 @@
  * expressアプリケーション
  * @module app
  */
+const middlewares = require("@motionpicture/express-middleware");
 const ttts = require("@motionpicture/ttts-domain");
 const bodyParser = require("body-parser");
 const express = require("express");
 const errorHandler_1 = require("./middlewares/errorHandler");
 const notFoundHandler_1 = require("./middlewares/notFoundHandler");
 const gmo_1 = require("./routes/gmo");
-const sendGrid_1 = require("./routes/sendGrid");
+const sendgrid_1 = require("./routes/sendgrid");
 const mongooseConnectionOptions_1 = require("../mongooseConnectionOptions");
 const app = express();
-if (process.env.NODE_ENV !== 'production') {
-    // サーバーエラーテスト
-    app.get('/500', (req) => {
-        // req.on('data', (chunk) => {
-        // });
-        req.on('end', () => {
-            throw new Error('500 manually.');
-        });
-    });
-}
+app.use(middlewares.basicAuth({
+    name: process.env.BASIC_AUTH_NAME,
+    pass: process.env.BASIC_AUTH_PASS
+}));
 // view engine setup
 // app.set('views', `${__dirname}/views`);
 // app.set('view engine', 'ejs');
@@ -30,9 +25,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // for parsing multipart/form-data
 // app.use(express.static(__dirname + '/../public'));
-// ルーティング登録の順序に注意！
 app.use('/gmo', gmo_1.default);
-app.use('/sendGrid', sendGrid_1.default);
+app.use('/sendgrid', sendgrid_1.default);
 // 404
 app.use(notFoundHandler_1.default);
 // error handlers

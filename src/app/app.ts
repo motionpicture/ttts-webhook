@@ -3,6 +3,7 @@
  * @module app
  */
 
+import * as middlewares from '@motionpicture/express-middleware';
 import * as ttts from '@motionpicture/ttts-domain';
 import * as bodyParser from 'body-parser';
 import * as express from 'express';
@@ -11,23 +12,16 @@ import errorHandler from './middlewares/errorHandler';
 import notFoundHandler from './middlewares/notFoundHandler';
 
 import gmoRouter from './routes/gmo';
-import sendGridRouter from './routes/sendGrid';
+import sendgridRouter from './routes/sendgrid';
 
 import mongooseConnectionOptions from '../mongooseConnectionOptions';
 
 const app = express();
 
-if (process.env.NODE_ENV !== 'production') {
-    // サーバーエラーテスト
-    app.get('/500', (req) => {
-        // req.on('data', (chunk) => {
-        // });
-
-        req.on('end', () => {
-            throw new Error('500 manually.');
-        });
-    });
-}
+app.use(middlewares.basicAuth({ // ベーシック認証
+    name: process.env.BASIC_AUTH_NAME,
+    pass: process.env.BASIC_AUTH_PASS
+}));
 
 // view engine setup
 // app.set('views', `${__dirname}/views`);
@@ -41,9 +35,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // app.use(express.static(__dirname + '/../public'));
 
-// ルーティング登録の順序に注意！
 app.use('/gmo', gmoRouter);
-app.use('/sendGrid', sendGridRouter);
+app.use('/sendgrid', sendgridRouter);
 
 // 404
 app.use(notFoundHandler);
